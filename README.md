@@ -2,6 +2,8 @@
 
 Ghost is a free, open, simple blogging platform. Visit the project's website at <http://ghost.org>, or read the docs on <http://support.ghost.org>.
 
+> This is a customized Euricom version of 'Ghost on Heroku'. For the original version see [https://github.com/cobyism/ghost-on-heroku](https://github.com/cobyism/ghost-on-heroku)
+
 ## Ghost version 1.X
 
 The latest release of Ghost is now supported! Changes include:
@@ -134,6 +136,43 @@ This can be automated by adding the following line to `Procfile`:
 ```
 release: knex-migrator migrate --mgpath node_modules/ghost
 ```
+
+## Email Config
+
+The default MailGun config is sandboxed and not usefull for production.
+You need to configure your custom domain to send mails.
+
+1. Open the MailGun Add-on
+2. Add New Domain (eg: mg.mydomain.com)
+3. Setup your domain TX & MX records and verify the Domain
+4. Reconfigure MAILGUN_DOMAIN, MAILGUN_SMTP_LOGIN & MAILGUN_SMTP_PASSWORD Config Vars to use the new domain.
+5. You can test the mail config in Ghost/Labs/Test email configuration (a test mail is send to the owner)
+
+## Add and customized themes
+
+Heroku app filesystems aren’t meant for permanent storage. So any uploaded data (like a theme) will be removed after some time. The solution is to add the theme via a new heroku deployment.
+
+So to install a new theme, download the zip file of the theme, unzip it and place it in `content/themes'
+
+Then deploy back to Heroku
+
+```
+git add .
+git commit -m 'Added/changed xxx theme'
+git push heroku master
+```
+
+## Backup/restore your blog
+
+#### Content (blogs, tags and users)
+
+There is no automatic backup available.
+
+To copy/restore the content manually you can use the Ghost/Labs/Migration options
+
+#### Images
+
+Images are stored on S3 (see S3_BUCKET_NAME Config Var). To transfer the blog to a new location you can copy the bucket and setup the configuration to this new location.
 
 ## Problems?
 
